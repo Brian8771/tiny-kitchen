@@ -7,18 +7,31 @@ router.get("/", (req, res) => {
     Order.find()
         .then(orders => res.json(orders))
         .catch(err => res.status(404).json(err))
-
     // get our orders
 })
+
 router.post("/", (req, res) => {
-    res.json("POST Success")
+    const newOrder = new Order({
+        items: req.body.items,
+        name: req.body.name,
+        address: req.body.address
+    })
+
+    newOrder
+        .save()
+        .then(order => res.json("Your Order is in the Works!"))
+        .catch(err => res.status(422).json(err))
 })
+
 router.patch("/", (req, res) => {
     res.json("PATCH Success")
 })
+
 router.delete("/:order_id", (req, res) => {
     const id = req.params.order_id;
-    res.json(`DELETE Success ${id}`)
+    Order.findOneAndDelete(id)
+        .then(order => res.json({ id: order._id }))
+        .catch(err => res.status(404).json(err))
 })
 
 export const orders = router;
