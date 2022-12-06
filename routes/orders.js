@@ -23,20 +23,22 @@ router.post("/", (req, res) => {
         .catch(err => res.status(422).json(err))
 })
 
-router.patch("/:order_id", async (req, res) => {
+router.patch("/:order_id", (req, res) => {
     const id = req.params.order_id;
 
     const update = {};
 
     if (req.body.items) update.items = req.body.items;
-    if (req.body.name) update.name = req.body.items;
+    if (req.body.name) update.name = req.body.name;
     if (req.body.address) update.address = req.body.address;
     if (req.body.isComplete) update.isComplete = req.body.isComplete;
 
 
-    const order = await Order.findOneAndUpdate({ id: id }, update, { new: true });
+    Order.findOneAndUpdate({ id: id }, update, { new: true })
+        .then(order => res.json(order))
+        .catch(err => res.status(404).json(err))
 
-    res.json(order)
+
 })
 
 router.delete("/:order_id", (req, res) => {
