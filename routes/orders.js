@@ -23,8 +23,20 @@ router.post("/", (req, res) => {
         .catch(err => res.status(422).json(err))
 })
 
-router.patch("/", (req, res) => {
-    res.json("PATCH Success")
+router.patch("/:order_id", async (req, res) => {
+    const id = req.params.order_id;
+
+    const update = {};
+
+    if (req.body.items) update.items = req.body.items;
+    if (req.body.name) update.name = req.body.items;
+    if (req.body.address) update.address = req.body.address;
+    if (req.body.isComplete) update.isComplete = req.body.isComplete;
+
+
+    const order = await Order.findOneAndUpdate({ id: id }, update, { new: true });
+
+    res.json(order)
 })
 
 router.delete("/:order_id", (req, res) => {
